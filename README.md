@@ -8,6 +8,32 @@ This project implements a Convolutional Neural Network (CNN) for MNIST digit cla
 
 The `Net` class defines the Convolutional Neural Network architecture:
 
+```python
+class Net(nn.Module):
+    #This defines the structure of the NN.
+    def __init__(self):
+        super(Net, self).__init__()
+        self.conv1 = nn.Conv2d(1, 8, kernel_size=3)
+        self.conv2 = nn.Conv2d(8, 16, kernel_size=3)
+        self.conv3 = nn.Conv2d(16, 8, kernel_size=3)
+        self.fc1 = nn.Linear(5*5*8, 80)
+        self.fc2 = nn.Linear(80, 10)
+
+    def forward(self, x):
+        x = F.relu(self.conv1(x))
+
+        x = F.relu(self.conv2(x))
+        x = F.max_pool2d(x, 2)
+
+        x = F.relu(self.conv3(x))
+        x = F.max_pool2d(x, 2)
+
+        x = x.view(-1, 200)
+        x = F.relu(self.fc1(x))
+        x = self.fc2(x)
+        return F.log_softmax(x, dim=1)
+```
+
 -   **Input Layer**: Expects a single-channel image (e.g., 28x28x1 for MNIST).
 
 -   **Convolutional Block 1**:
